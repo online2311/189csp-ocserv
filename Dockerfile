@@ -62,9 +62,6 @@ RUN set -x \
 	&& rm -fr /tmp/route.txt
 
 WORKDIR /etc/ocserv
-
-ADD ./docker-entrypoint.sh /entrypoint.sh
-RUN chmod 755 /entrypoint.sh
-
 EXPOSE 443
-CMD ["/entrypoint.sh"]
+
+CMD ["ocserv", "-c", "/etc/ocserv/ocserv.conf", "-f"]
