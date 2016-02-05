@@ -64,7 +64,7 @@ RUN set -x \
 WORKDIR /etc/ocserv
 
 ADD ./docker-entrypoint.sh /entrypoint.sh
-
+RUN chmod 755 /entrypoint.sh
 
 EXPOSE 443
 CMD ["/entrypoint.sh"]
