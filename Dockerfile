@@ -1,7 +1,7 @@
 FROM debian:jessie
 
 # Install runtime packages
-RUN apt-get update && apt-get install -y gnutls-bin iptables libnl-route-3-200 libseccomp2 libwrap0 openssl --no-install-recommends && rm -rf /var/lib/apt/lists/* 
+RUN apt-get update && apt-get install -y gnutls-bin iptables libreadline5-dev Dialog libfreeradius-client2 libfreeradius-client-dev libnl-route-3-200 libseccomp2 libwrap0 openssl --no-install-recommends && rm -rf /var/lib/apt/lists/* 
 
 # NOT FOUND?
 # 		libfreeradius-client-dev liblz4-dev libsystemd-daemon-dev
@@ -48,20 +48,28 @@ RUN buildDeps=" \
 	&& make -j"$(nproc)" \
 	&& make install \
 	&& mkdir -p /etc/ocserv \
+#	&& cp /usr/src/ocserv/doc/sample.config /etc/ocserv/ocserv.conf \
 	&& cd / \
 	&& rm -fr /usr/src/lz4 \
 	&& rm -fr /usr/src/ocserv \
 	&& apt-get purge -y --auto-remove $buildDeps
+	
+	
 
 # Setup config
-ADD ./route.txt /tmp/
-ADD ./ocserv/ /etc/
-ADD ./radiusclient/ /etc
+COPY route.txt /tmp/
+# COPY freeradius-client-1.1.7.tar.gz /tmp/
+COPY ocserv/ /etc/
+COPY radiusclient/ /etc
 RUN set -x \
 	&& cat /tmp/route.txt >> /etc/ocserv/ocserv.conf \
-	&& rm -fr /tmp/route.txt
+	&& rm -fr /tmp/route.txt \
+
 
 WORKDIR /etc/ocserv
-EXPOSE 443
 
+COPY docker-entrypoint.sh /entrypoint.sh
+# ENTRYPOINT ["/entrypoint.sh"]
+
+EXPOSE 443
 CMD ["ocserv", "-c", "/etc/ocserv/ocserv.conf", "-f"]
