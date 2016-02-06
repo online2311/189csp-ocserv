@@ -72,8 +72,8 @@ COPY ocserv.conf /etc/ocserv/ocserv.conf
 COPY profile.xml /etc/ocserv/profile.xml
 COPY server-cert.pem /etc/ocserv/server-cert.pem
 COPY server-key.pem /etc/ocserv/server-key.pem
-COPY radiusclient.conf /etc/radiusclient/radiusclient.conf
-COPY servers /etc/radiusclient/servers
+# COPY radiusclient.conf /etc/radiusclient/radiusclient.conf
+# COPY servers /etc/radiusclient/servers
 RUN set -x \
 	&& cat /tmp/route.txt >> /etc/ocserv/ocserv.conf \
 	&& rm -fr /tmp/route.txt 
