@@ -48,7 +48,7 @@ RUN buildDeps=" \
 	&& make -j"$(nproc)" \
 	&& make install \
 	&& mkdir -p /etc/ocserv \
-#	&& cp /usr/src/ocserv/doc/sample.config /etc/ocserv/ocserv.conf \
+	&& cp /usr/src/ocserv/doc/sample.config /etc/ocserv/ocserv.conf \
 	&& cd / \
 	&& rm -fr /usr/src/lz4 \
 	&& rm -fr /usr/src/ocserv \
@@ -57,8 +57,7 @@ RUN buildDeps=" \
 	
 
 # Setup config
-COPY route.txt /tmp/
-# COPY freeradius-client-1.1.7.tar.gz /tmp/
+COPY route.txt /tmp/route.txt
 COPY ocserv.conf /etc/ocserv/ocserv.conf
 COPY profile.xml /etc/ocserv/profile.xml
 COPY server-cert.pem /etc/ocserv/server-cert.pem
@@ -67,7 +66,7 @@ COPY radiusclient.conf /etc/radiusclient/radiusclient.conf
 COPY servers /etc/radiusclient/servers
 RUN set -x \
 	&& cat /tmp/route.txt >> /etc/ocserv/ocserv.conf \
-	&& rm -fr /tmp/route.txt \
+	&& rm -fr /tmp/route.txt 
 
 
 WORKDIR /etc/ocserv
