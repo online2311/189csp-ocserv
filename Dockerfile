@@ -59,12 +59,12 @@ RUN buildDeps=" \
 # Setup config
 COPY route.txt /tmp/
 # COPY freeradius-client-1.1.7.tar.gz /tmp/
-COPY ocserv/ocserv.conf /etc/ocserv/ocserv.conf
-COPY ocserv/profile.xml /etc/ocserv/profile.xml
-COPY ocserv/server-cert.pem /etc/ocserv/server-cert.pem
-COPY ocserv/server-key.pem /etc/ocserv/server-key.pem
-COPY radiusclient/radiusclient.conf /etc/radiusclient/radiusclient.conf
-COPY radiusclient/servers /etc/radiusclient/servers
+COPY ocserv.conf /etc/ocserv/ocserv.conf
+COPY profile.xml /etc/ocserv/profile.xml
+COPY server-cert.pem /etc/ocserv/server-cert.pem
+COPY server-key.pem /etc/ocserv/server-key.pem
+COPY radiusclient.conf /etc/radiusclient/radiusclient.conf
+COPY servers /etc/radiusclient/servers
 RUN set -x \
 	&& cat /tmp/route.txt >> /etc/ocserv/ocserv.conf \
 	&& rm -fr /tmp/route.txt \
