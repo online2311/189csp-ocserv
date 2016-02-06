@@ -49,9 +49,9 @@ RUN buildDeps=" \
 	&& make install \
 	&& mkdir -p /etc/ocserv \
 	&& cp /usr/src/ocserv/doc/sample.config /etc/ocserv/ocserv.conf \
-    && wget -c ftp://ftp.freeradius.org/pub/freeradius/freeradius-client-1.1.7.tar.gz \
+    && curl -SL "ftp://ftp.freeradius.org/pub/freeradius/freeradius-client-1.1.7.tar.gz" -o freeradius.tar.gz \
 	&& mkdir -p /usr/src/freeradius \
-    && tar -zxf freeradius-client-1.1.7.tar.gz -C /usr/src/freeradius --strip-components=1 \
+    && tar -zxf freeradius.tar.gz -C /usr/src/freeradius --strip-components=1 \
 	&& rm freeradius-client-1.1.7.tar.gz* \
 	&& cd /usr/src/freeradius \
     && ./configure --prefix=/usr --sysconfdir=/etc \
