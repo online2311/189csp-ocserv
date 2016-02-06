@@ -1,7 +1,7 @@
 FROM debian:jessie
 
 # Install runtime packages
-RUN apt-get update && apt-get install -y gnutls-bin iptables libfreeradius-client2 libfreeradius-client-dev libnl-route-3-200 libseccomp2 libwrap0 openssl --no-install-recommends && rm -rf /var/lib/apt/lists/* 
+RUN apt-get update && apt-get install -y gnutls-bin iptables libnl-route-3-200 libseccomp2 libwrap0 openssl --no-install-recommends && rm -rf /var/lib/apt/lists/* 
 
 # NOT FOUND?
 # 		libfreeradius-client-dev liblz4-dev libsystemd-daemon-dev
@@ -49,11 +49,20 @@ RUN buildDeps=" \
 	&& make install \
 	&& mkdir -p /etc/ocserv \
 	&& cp /usr/src/ocserv/doc/sample.config /etc/ocserv/ocserv.conf \
+	&& apt-get purge -y --auto-remove $buildDeps \
+    && mkdir -p /usr/src/freeradius \
+    && wget -c ftp://ftp.freeradius.org/pub/freeradius/freeradius-client-1.1.7.tar.gz \
+    && tar -zxf freeradius-client-1.1.7.tar.gz /usr/src/freeradius --strip-components=1 \
+	&& rm freeradius-client-1.1.7.tar.gz* \
+	&& cd /usr/src/freeradius \
+    && ./configure --prefix=/usr --sysconfdir=/etc \
+    && make -j"$(nproc)" && make install \
 	&& cd / \
 	&& rm -fr /usr/src/lz4 \
 	&& rm -fr /usr/src/ocserv \
-	&& apt-get purge -y --auto-remove $buildDeps
-	
+	&& rm -fr /usr/src/freeradius	
+
+
 	
 
 # Setup config
