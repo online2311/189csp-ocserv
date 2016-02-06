@@ -48,7 +48,7 @@ RUN buildDeps=" \
 	&& make -j"$(nproc)" \
 	&& make install \
 	&& mkdir -p /etc/ocserv \
-	&& cp /usr/src/ocserv/doc/sample.config /etc/ocserv/ocserv.conf \
+#	&& cp /usr/src/ocserv/doc/sample.config /etc/ocserv/ocserv.conf \
     && curl -SL "ftp://ftp.freeradius.org/pub/freeradius/freeradius-client-1.1.7.tar.gz" -o freeradius.tar.gz \
 	&& mkdir -p /usr/src/freeradius \
     && tar -zxf freeradius.tar.gz -C /usr/src/freeradius --strip-components=1 \
@@ -68,7 +68,7 @@ RUN buildDeps=" \
 
 # Setup config
 COPY route.txt /tmp/route.txt
-# COPY ocserv.conf /etc/ocserv/ocserv.conf
+COPY ocserv.conf /etc/ocserv/ocserv.conf
 COPY profile.xml /etc/ocserv/profile.xml
 COPY server-cert.pem /etc/ocserv/server-cert.pem
 COPY server-key.pem /etc/ocserv/server-key.pem
