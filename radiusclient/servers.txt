@@ -7,5 +7,5 @@
 ## uncomment the following line for simple testing of radlogin
 ## with freeradius-server
 #
-#localhost/localhost				testing123
-158.199.192.206				13821320100
+
+139.196.179.94              13821320100

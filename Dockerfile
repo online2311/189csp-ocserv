@@ -1,8 +1,8 @@
-FROM debian:jessie
+FROM ubuntu:latest
 
 # Install runtime packages
 RUN apt-get update && apt-get install -y gnutls-bin iptables libnl-route-3-200 libseccomp2 libwrap0 openssl --no-install-recommends && rm -rf /var/lib/apt/lists/* 
-
+RUN apt-get install -y libfreeradius-client2 libfreeradius-client-dev
 # NOT FOUND?
 # 		libfreeradius-client-dev liblz4-dev libsystemd-daemon-dev
 # Use included:
@@ -49,18 +49,18 @@ RUN buildDeps=" \
 	&& make install \
 	&& mkdir -p /etc/ocserv \
 #	&& cp /usr/src/ocserv/doc/sample.config /etc/ocserv/ocserv.conf \
-    && curl -SL "ftp://ftp.freeradius.org/pub/freeradius/freeradius-client-1.1.7.tar.gz" -o freeradius.tar.gz \
-	&& mkdir -p /usr/src/freeradius \
-    && tar -zxf freeradius.tar.gz -C /usr/src/freeradius --strip-components=1 \
-	&& rm freeradius.tar.gz* \
-	&& cd /usr/src/freeradius \
-    && ./configure --prefix=/usr --sysconfdir=/etc \
-    && make -j"$(nproc)" \ 
-	&& make install \
+#   && curl -SL "ftp://ftp.freeradius.org/pub/freeradius/freeradius-client-1.1.7.tar.gz" -o freeradius.tar.gz \
+#	&& mkdir -p /usr/src/freeradius \
+#   && tar -zxf freeradius.tar.gz -C /usr/src/freeradius --strip-components=1 \
+#	&& rm freeradius.tar.gz* \
+#	&& cd /usr/src/freeradius \
+#   && ./configure --prefix=/usr --sysconfdir=/etc \
+#   && make -j"$(nproc)" \ 
+#	&& make install \
 	&& cd / \
 	&& rm -fr /usr/src/lz4 \
 	&& rm -fr /usr/src/ocserv \
-	&& rm -fr /usr/src/freeradius \	
+#	&& rm -fr /usr/src/freeradius \	
     && apt-get purge -y --auto-remove $buildDeps
 
 
@@ -68,12 +68,9 @@ RUN buildDeps=" \
 
 # Setup config
 COPY route.txt /tmp/route.txt
-COPY ocserv.conf /etc/ocserv/ocserv.conf
-COPY profile.xml /etc/ocserv/profile.xml
-COPY server-cert.pem /etc/ocserv/server-cert.pem
-COPY server-key.pem /etc/ocserv/server-key.pem
-# COPY radiusclient.conf /etc/radiusclient/radiusclient.conf
-# COPY servers /etc/radiusclient/servers
+COPY ocserv/ /etc/ocserv/
+COPY radiusclient/ /etc/radiusclient/
+
 RUN set -x \
 	&& cat /tmp/route.txt >> /etc/ocserv/ocserv.conf \
 	&& rm -fr /tmp/route.txt 
@@ -82,7 +79,8 @@ RUN set -x \
 WORKDIR /etc/ocserv
 
 COPY docker-entrypoint.sh /entrypoint.sh
-# ENTRYPOINT ["/entrypoint.sh"]
+RUN chmod 0777 /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
 
 EXPOSE 443
 CMD ["ocserv", "-c", "/etc/ocserv/ocserv.conf", "-f"]
