@@ -11,13 +11,13 @@ docker-ocserv is an OpenConnect VPN Server boxed in a Docker image built by [Zha
 Get the docker image by running the following commands:
 
 ```bash
-docker pull index.alauda.cn/docker189csp/docker-ocserv
+docker pull 189csp/docker-ocserv
 ```
 
 Start an ocserv instance:
 
 ```bash
-docker run --name ocserv --privileged -p 443:443 -d docker189csp/docker-ocserv
+docker run --name ocserv --privileged -p 443:443 -d 189csp/docker-ocserv
 ```
 
 User Account opening and closing all centrally managed by Radius.
