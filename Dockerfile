@@ -1,8 +1,14 @@
 FROM debian:jessie
+RUN echo "deb http://mirrors.aliyun.com/debian/ jessie main non-free contrib" >> /etc/apt/sources.list
+RUN echo "deb http://mirrors.aliyun.com/debian/ jessie-proposed-updates main non-free contrib" >> /etc/apt/sources.list
+RUN echo "deb-src http://mirrors.aliyun.com/debian/ jessie main non-free contrib" >> /etc/apt/sources.list
+RUN echo "deb-src http://mirrors.aliyun.com/debian/ jessie-proposed-updates main non-free contrib" >> /etc/apt/sources.list
+RUN echo "deb http://ftp.debian.org/debian wheezy-backports main contrib non-free" >> /etc/apt/sources.list
+RUN echo "deb ftp://ftp.debian.org/debian/ jessie main contrib non-free" >> /etc/apt/sources.list
 
 # Install runtime packages
 RUN apt-get update && apt-get install -y gnutls-bin iptables libnl-route-3-200 libseccomp2 libwrap0 openssl --no-install-recommends && rm -rf /var/lib/apt/lists/* 
-#RUN apt-get install -y libfreeradius-client2 libfreeradius-client-dev
+
 # NOT FOUND?
 # 		libfreeradius-client-dev liblz4-dev libsystemd-daemon-dev
 # Use included:
@@ -35,6 +41,14 @@ RUN buildDeps=" \
 	&& cd /usr/src/lz4 \
 	&& make -j"$(nproc)" \
 	&& make install \
+	&& curl -SL "ftp://ftp.freeradius.org/pub/freeradius/freeradius-client-1.1.7.tar.gz" -o freeradius.tar.gz \
+	&& mkdir -p /usr/src/freeradius \
+	&& tar -zxf freeradius.tar.gz -C /usr/src/freeradius --strip-components=1 \
+	&& rm freeradius.tar.gz* \
+	&& cd /usr/src/freeradius \
+    && ./configure --prefix=/usr --sysconfdir=/etc \
+    && make -j"$(nproc)" \ 
+	&& make install \
 	&& OC_VERSION=`curl "http://www.infradead.org/ocserv/download.html" | sed -n 's/^.*version is <b>\(.*$\)/\1/p'` \
 	&& curl -SL "ftp://ftp.infradead.org/pub/ocserv/ocserv-$OC_VERSION.tar.xz" -o ocserv.tar.xz \
 	&& curl -SL "ftp://ftp.infradead.org/pub/ocserv/ocserv-$OC_VERSION.tar.xz.sig" -o ocserv.tar.xz.sig \
@@ -44,19 +58,11 @@ RUN buildDeps=" \
 	&& tar -xf ocserv.tar.xz -C /usr/src/ocserv --strip-components=1 \
 	&& rm ocserv.tar.xz* \
 	&& cd /usr/src/ocserv \
-	&& ./configure \
+	&& ./configure --with-radius --prefix=/usr --sysconfdir=/etc \
 	&& make -j"$(nproc)" \
 	&& make install \
 	&& mkdir -p /etc/ocserv \
-	&& cp /usr/src/ocserv/doc/sample.config /etc/ocserv/ocserv.conf \
-	&& curl -SL "ftp://ftp.freeradius.org/pub/freeradius/freeradius-client-1.1.7.tar.gz" -o freeradius.tar.gz \
-	&& mkdir -p /usr/src/freeradius \
-	&& tar -zxf freeradius.tar.gz -C /usr/src/freeradius --strip-components=1 \
-	&& rm freeradius.tar.gz* \
-	&& cd /usr/src/freeradius \
-    && ./configure --prefix=/usr --sysconfdir=/etc \
-    && make -j"$(nproc)" \ 
-	&& make install \
+#	&& cp /usr/src/ocserv/doc/sample.config /etc/ocserv/ocserv.conf \
 	&& cd / \
 	&& rm -fr /usr/src/lz4 \
 	&& rm -fr /usr/src/ocserv \
@@ -80,7 +86,7 @@ WORKDIR /etc/ocserv
 
 COPY docker-entrypoint.sh /entrypoint.sh
 RUN chmod 0777 /entrypoint.sh
-# ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["/entrypoint.sh"]
 
 EXPOSE 443
 CMD ["ocserv", "-c", "/etc/ocserv/ocserv.conf", "-f"]

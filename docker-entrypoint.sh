@@ -1,12 +1,16 @@
 #!/bin/sh
-set -e
 
+# Open ipv4 ip forward
+sysctl -w net.ipv4.ip_forward=1
+# Enable NAT forwarding
+iptables -t nat -A POSTROUTING -j MASQUERADE
+iptables -A FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu
 
+# Enable TUN device
+mkdir -p /dev/net
+mknod /dev/net/tun c 10 200
+chmod 600 /dev/net/tun
 
-sed -i "139.196.179.94 13821320100" /etc/radiusclient/servers
-sed -i "139.196.179.94:1812" /etc/radiusclient/radiusclient.conf
-sed -i "139.196.179.94:1813" /etc/radiusclient/radiusclient.conf
-echo "" > /etc/radiusclient/port-id-map
 
 # Run OpennConnect Server
 exec "$@"
