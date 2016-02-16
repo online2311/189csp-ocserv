@@ -19,14 +19,14 @@
 		</CertificateMatch>
 
 		<BackupServerList>
-	            <HostAddress>sn.ca17.net</HostAddress>
+	            <HostAddress>o365.ca17.net</HostAddress>
 		</BackupServerList>
 	</ClientInitialization>
 
 	<ServerList>
 		<HostEntry>
-	            <HostName>CA17 AnyConnect Server</HostName>
-	            <HostAddress>sn.ca17.net</HostAddress>
+	            <HostName>Office365云加速-CA17</HostName>
+	            <HostAddress>o365.ca17.net</HostAddress>
 		</HostEntry>
 	</ServerList>
 </AnyConnectProfile>

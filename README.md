@@ -1,23 +1,23 @@
 # docker-ocserv
 
-docker-ocserv is an OpenConnect VPN Server boxed in a Docker image built by [Zhang Jing](zhangjing@189csp.com).
+docker-ocserv 是一个Cisco AnyConnect 虚拟专用网接入服务的Docker镜像。 作者：[Zhang Jing](zhangjing@189csp.com).
 
-## What is OpenConnect Server?
 
-[OpenConnect server (ocserv)](http://www.infradead.org/ocserv/) is an SSL VPN server. It implements the OpenConnect SSL VPN protocol, and has also (currently experimental) compatibility with clients using the [AnyConnect SSL VPN](http://www.cisco.com/c/en/us/support/security/anyconnect-vpn-client/tsd-products-support-series-home.html) protocol.
+## 如果使用docker-ocserv镜像
 
-## How to use this image
-
-Get the docker image by running the following commands:
+通过以下命令获取Docker镜像:
 
 ```bash
 docker pull 189csp/docker-ocserv
 ```
 
-Start an ocserv instance:
+启动 ocserv 实例:
 
 ```bash
 docker run --name ocserv --privileged -p 443:443 -d 189csp/docker-ocserv
 ```
 
-User Account opening and closing all centrally managed by Radius.
+用户帐户都通过用户管理平台集中管理。
+```bash
+https://cp.ca17.net
+```
